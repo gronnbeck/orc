@@ -1,2 +1,5 @@
 image:
   file: .gitpod.dockerfile
+vscode:
+  extensions:
+    - justusadam.language-haskell@2.7.0:CE+xxRvVf2m2fQbJXGALmg==
