@@ -12,5 +12,7 @@ RUN mkdir -p $HOME/.stacktmp && cd $HOME/.stacktmp && \
     cd haskell-ide-engine && \
     rm -rf $HOME/.stacktmp
 
+RUN stack install hlint
+
 COPY .gitpod/bashrc-append.sh $HOME/bashrc-append.sh
 RUN cat $HOME/bashrc-append.sh >> $HOME/.bashrc
