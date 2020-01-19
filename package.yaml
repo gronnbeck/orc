@@ -25,6 +25,7 @@ dependencies:
 - warp >= 3.3.5
 - wai-extra
 - http-types
+- text
 
 library:
   source-dirs: src
