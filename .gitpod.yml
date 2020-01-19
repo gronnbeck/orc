@@ -3,3 +3,4 @@ image:
 vscode:
   extensions:
     - justusadam.language-haskell@2.7.0:CE+xxRvVf2m2fQbJXGALmg==
+    - hoovercj.haskell-linter@0.0.6:VpJluXvOyr9Iw7TIKg2Oyg==
