@@ -23,7 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - wai >= 3.2.2.1
 - warp >= 3.3.5
-- wai-extra >= 3.0.29
+- wai-extra
 - http-types
 
 library:
