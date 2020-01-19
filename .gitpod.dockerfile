@@ -11,3 +11,6 @@ RUN mkdir -p $HOME/.stacktmp && cd $HOME/.stacktmp && \
     git clone https://github.com/haskell/haskell-ide-engine --recurse-submodules && \
     cd haskell-ide-engine && \
     rm -rf $HOME/.stacktmp
+
+COPY .gitpod/bashrc-append.sh $HOME/bashrc-append.sh
+RUN cat $HOME/bashrc-append.sh >> $HOME/.bashrc
