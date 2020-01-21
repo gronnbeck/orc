@@ -25,6 +25,8 @@ dependencies:
 - warp >= 3.3.5
 - wai-extra
 - http-types
+- aeson
+- bytestring
 - text
 
 library:
