@@ -14,5 +14,7 @@ RUN mkdir -p $HOME/.stacktmp && cd $HOME/.stacktmp && \
 
 RUN stack install hlint
 
+ENV STACK_ROOT=/workspace/.stack
+
 COPY .gitpod/bashrc-append.sh $HOME/bashrc-append.sh
 RUN cat $HOME/bashrc-append.sh >> $HOME/.bashrc
