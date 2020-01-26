@@ -12,6 +12,7 @@ import Data.Text.Encoding
 import Data.Aeson (ToJSON, toEncoding, (.=), object, encode, genericToEncoding, defaultOptions)
 import GHC.Generics
 import Data.ByteString.Builder (lazyByteString)
+import Database.PostgreSQL.Simple
 
 data Job = Job { id :: String, status :: String }
   deriving (Generic, Show)
@@ -41,3 +42,15 @@ main = run 3000 $ \req send ->
                 (lazyByteString (encode (Job "uuid" "pending")))
     _ ->  send $ responseBuilder status404 []
             "These are not the droid you are looking for"
+
+
+testPostgres :: IO ()
+testPostgres = do
+  i <- testPostgresQuery
+  print i
+
+testPostgresQuery :: IO Int
+testPostgresQuery = do
+  conn <- connectPostgreSQL "host='localhost' dbname='postgres'"
+  [Only i] <- query_ conn "select 2 + 2"
+  return i
