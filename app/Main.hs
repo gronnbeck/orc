@@ -10,9 +10,14 @@ import Network.HTTP.Types (status200, status404, status405)
 import Data.Text as T
 import Data.Text.Encoding
 import Data.Aeson (ToJSON, toEncoding, (.=), object, encode, genericToEncoding, defaultOptions)
+import Data.UUID
 import GHC.Generics
 import Data.ByteString.Builder (lazyByteString)
 import Database.PostgreSQL.Simple
+import Database.PostgreSQL.Simple.Migration
+import qualified Data.ByteString as BS8
+import Database.PostgreSQL.Simple.FromField
+import Database.PostgreSQL.Simple.FromRow
 
 data Job = Job { id :: String, status :: String }
   deriving (Generic, Show)
@@ -43,6 +48,16 @@ main = run 3000 $ \req send ->
     _ ->  send $ responseBuilder status404 []
             "These are not the droid you are looking for"
 
+connStr = "host='localhost' dbname='ork'"
+
+migrate :: IO ()
+migrate = do
+    let url = connStr
+    let dir = "./migrations"
+    con <- connectPostgreSQL url
+    withTransaction con $ runMigration $
+      MigrationContext (MigrationCommands [MigrationInitialization, MigrationDirectory dir]) True con
+    print "Migration done"
 
 testPostgres :: IO ()
 testPostgres = do
@@ -51,6 +66,12 @@ testPostgres = do
 
 testPostgresQuery :: IO Int
 testPostgresQuery = do
-  conn <- connectPostgreSQL "host='localhost' dbname='postgres'"
+  conn <- connectPostgreSQL connStr
   [Only i] <- query_ conn "select 2 + 2"
   return i
+
+getJobDescriptions :: IO [Only UUID]
+getJobDescriptions = do
+  conn <- connectPostgreSQL connStr
+  a <- query_ conn "select id from job_descriptions"
+  return a

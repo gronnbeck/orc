@@ -1,0 +1,29 @@
+CREATE EXTENSION pgcrypto;
+
+CREATE TABLE job_descriptions (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  description TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE jobs (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  job_description UUID NOT NULL REFERENCES job_descriptions(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE statuses (
+  id SERIAL NOT NULL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE job_attempts (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  status INT NOT NULL REFERENCES statuses(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

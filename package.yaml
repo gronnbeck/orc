@@ -29,6 +29,8 @@ dependencies:
 - bytestring
 - text
 - postgresql-simple
+- postgresql-simple-migration
+- uuid
 
 library:
   source-dirs: src
