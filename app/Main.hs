@@ -11,6 +11,7 @@ import Data.Text as T
 import Data.Text.Encoding
 import Data.Aeson (ToJSON, toEncoding, (.=), object, encode, genericToEncoding, defaultOptions)
 import Data.UUID
+import qualified Data.UUID.V4 as UUIDV4
 import GHC.Generics
 import Data.ByteString.Builder (lazyByteString)
 import Database.PostgreSQL.Simple
@@ -19,7 +20,7 @@ import qualified Data.ByteString as BS8
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.FromRow
 
-data Job = Job { id :: String, status :: String }
+data Job = Job { id :: UUID, status :: String }
   deriving (Generic, Show)
 
 instance ToJSON Job where
@@ -41,10 +42,21 @@ main = run 3000 $ \req send ->
             status200
             []
             (encodeUtf8Builder (T.concat [T.pack "Hello, ", name]))
-    ["job"] -> send $ responseBuilder
+    ["job"] -> do
+      id <- UUIDV4.nextRandom
+      send $ responseBuilder
                 status200
                 []
-                (lazyByteString (encode (Job "uuid" "pending")))
+                (lazyByteString (encode (Job id "pending")))
+    ["job-description"] -> do
+      jobDescs <- getJobDescriptions 
+      let
+        (Only jobDesc) = Prelude.head jobDescs
+        in
+        send $ responseBuilder
+          status200
+          []
+          (lazyByteString (encode (Job jobDesc "pending")))
     _ ->  send $ responseBuilder status404 []
             "These are not the droid you are looking for"
 
