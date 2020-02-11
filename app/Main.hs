@@ -20,10 +20,21 @@ import qualified Data.ByteString as BS8
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.FromRow
 
-data Job = Job { id :: UUID, status :: String }
+data JobStatus
+ = Pending
+ | Started
+ | Failed
+ | Completed
+ | Timedout
+ deriving (Generic, Show)
+
+data Job = Job { id :: UUID, status :: JobStatus }
   deriving (Generic, Show)
 
 instance ToJSON Job where
+  toEncoding = genericToEncoding defaultOptions
+
+instance ToJSON JobStatus where
   toEncoding = genericToEncoding defaultOptions
 
 badRequestMethod :: Response
@@ -47,7 +58,7 @@ main = run 3000 $ \req send ->
       send $ responseBuilder
                 status200
                 []
-                (lazyByteString (encode (Job id "pending")))
+                (lazyByteString (encode (Job id Pending)))
     ["job-description"] -> do
       jobDescs <- getJobDescriptions 
       let
@@ -56,7 +67,7 @@ main = run 3000 $ \req send ->
         send $ responseBuilder
           status200
           []
-          (lazyByteString (encode (Job jobDesc "pending")))
+          (lazyByteString (encode (Job jobDesc Pending)))
     _ ->  send $ responseBuilder status404 []
             "These are not the droid you are looking for"
 
