@@ -5,6 +5,8 @@ USER root
 RUN apt-get update && apt-get install -y haskell-platform && apt-get install hlint
 RUN curl -sSL https://get.haskellstack.org/ | sh
 
+RUN apt install -y tmux
+
 USER gitpod
 
 RUN mkdir -p $HOME/.stacktmp && cd $HOME/.stacktmp && \
